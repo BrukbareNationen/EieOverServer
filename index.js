@@ -53,7 +53,7 @@ app.get('/load', async (req, res) => {
   let salesJSON = JSON.stringify(sales);
   fs.writeFileSync('./public/sales.json', salesJSON);
 
-  res.send("Henter fra " + fromDate + " til " + toDate)
+  res.send("Henter fra " + fromDate + " til " + toDate +" og legnden er " + sales.length)
 })
 
 app.get('/slack', (req, res) => {

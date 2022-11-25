@@ -16,6 +16,7 @@ app.set("port", process.env.PORT || 3300);
 app.use(express.urlencoded({extended: false}));
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static('public'));
 
 // ADD CALL to execute your function(s)
 sf.initScheduledJobs();
@@ -34,12 +35,12 @@ app.get('/', (req, res) => {
 
 app.get('/load', async (req, res) => {
     let allSales = await w.main();
-    let allJSON = await JSON.stringify(allSales);
+    //let allJSON = await JSON.stringify(allSales);
 
-    console.log(allSales);
+   
     //await Sales.insertMany(allSales);
 
-   res.send(allSales)
+   res.send(allSales.length + "asdqwd")
 })
 
 app.get('/slack', (req, res) => {

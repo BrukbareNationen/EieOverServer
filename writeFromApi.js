@@ -6,23 +6,23 @@ const Sales = require('./models/Sales');
 const { JSDOM } = require("jsdom");
 const { window } = new JSDOM();
 
-const TEST_URL = 'https://services.api.no/api/acies/v1/external/1881/property/?querystring=&filters=PropertyType:Landbruk/fiske,PropertySoldDate:2020-01-01--2022-24-11&fields=*&rows=10000&sortby=propertysolddate%20DESC,saleId%20ASC'
+const TEST_URL = 'https://services.api.no/api/acies/v1/external/1881/property/?querystring=&filters=PropertyType:Landbruk/fiske,PropertySoldDate:2020-01-01--2022-11-24&fields=*&rows=2000&sortby=propertysolddate%20DESC,saleId%20ASC'
 // Use array buffer!
 
 let sales = [];
 
 async function main() {
-  
-  
+
+
   let abc = await getData();
-  refaktorData(abc)
+  let def = refaktorData(abc)
+  return def
 }
 
-async function getData () {
+async function getData() {
 
-   let json = await axios.get(TEST_URL);
-   
-   return json.data;
+  let json = await axios.get(TEST_URL);
+  return json.data;
 }
 
 
@@ -36,38 +36,43 @@ async function getData () {
 //     })
 //     .catch(err => {
 //         console.log(err + " feil 2")
- //    })
-     //.then( data => {
-		// 	console.log(data, "er det noe data her?")
+//    })
+//.then( data => {
+// 	console.log(data, "er det noe data her?")
 
-		// });
-
-
+// });
 
 
 
 
 
-function refaktorData (data) {
+
+
+function refaktorData(data) {
   //  Loop though Hits
+  console.log(data.Hits.length, 'response from 1881');
+
+
   data.Hits.forEach(d => {
     let id = d.Property.Sale.Id
-    // Coordinate function
-    let xy = (d.Property.StreetAddress.Coordinate) ? [d.Property.StreetAddress.Coordinate.Latitude, d.Property.StreetAddress.Coordinate.Longitude] : null
-    // Get Matrikkelnummer in right format
+    let xy = d.Property.StreetAddress.Coordinate ? [d.Property.StreetAddress.Coordinate.Latitude, d.Property.StreetAddress.Coordinate.Longitude] : null
+    let address = d.Property.StreetAddress.StreetName ? d.Property.StreetAddress.StreetName + " " + d.Property.StreetAddress.HouseNumber : null
     let mn = d.Property.Sale.NewsletterFormatText.split(";")
     let mnFormat = mn[9] + "-" + mn[10] + "/" + mn[11] + "/" + mn[12] + "/" + mn[13]
 
     // If sale does not exist, push new sale
-    if (!sales.some(d => d.SaleId == id)) {
+    if (!sales.some(s => s.saleId == id)) {
       sales.push({
         saleId: id,
+        multiple: false,
         price: d.Property.Sale.Price,
         date: d.Property.Sale.SoldDate,
         type: d.Property.Sale.Type,
         properties: [{
           type: d.Property.BuildingType,
           coordinates: xy,
+          address: address,
+          municipality: d.Property.StreetAddress.Municipality,
           matrikkelNumber: mnFormat,
           text: {
             line: d.Property.Sale.LineId,
@@ -79,10 +84,13 @@ function refaktorData (data) {
 
     // If sale exist, push new property
     else {
-      let i = sales.findIndex(x => x.SaleId == id) // Find SaleId array index
+      let i = sales.findIndex(x => x.saleId == id) // Find SaleId array index
+      sales[i].multiple = true;
       sales[i].properties.unshift({
         type: d.Property.BuildingType,
         coordinates: xy,
+        address: address,
+        municipality: d.Property.StreetAddress.Municipality,
         matrikkelNumber: mnFormat,
         text: {
           line: d.Property.Sale.LineId,
@@ -92,40 +100,11 @@ function refaktorData (data) {
     }
   })
 
-  // Get centroid point or single coordinates AND summarize text
-  sales.forEach(sale => {
-    // Multiple properties
-    if (sale.properties.length > 1) {
-      // Declare multiple
-      sale.Multiple = true
-      // Make centroid and text
-      let xys = []
-      let txt = ""
-      sale.properties.forEach(prop => {
-        if (prop.coordinates != null) xys.push(prop.coordinates)
-        txt += (prop.Text.Text)
-      })
-      sale.Text = txt
-      if (xys.length > 1) {
-        let feature = turf.points(xys)
-        let latLng = turf.center(feature);
-        sale.coordinates = [latLng.lat, latLng.lng]
-      }
-      // Fallback if only one property has coordinates
-      else sale.coordinates = xys[0]
-    }
-    // Single property
-    else {
-      sale.multiple = false
-      sale.coordinates = sale.properties[0].coordinates
-      sale.text = sale.properties[0].text.text
-    }
-  })
+  let salesJSON = JSON.stringify(sales);
+  console.log(sales.length, 'formatert data');
 
-  salesJSON = JSON.stringify(sales)
-  console.log(sales.length);
-  //fs.writeFileSync('./sales.json', salesJSON);
-  Sales.insertMany(sales);
+  fs.writeFileSync('./public/sales.json', salesJSON);
+  //Sales.insertMany(sales);
   return sales
   // return salesJSON
 }

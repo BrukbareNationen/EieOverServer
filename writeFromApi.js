@@ -5,22 +5,21 @@ const Sales = require('./models/Sales');
 
 
 
-const TEST_URL = 'https://services.api.no/api/acies/v1/external/1881/property/?querystring=&filters=PropertyType:Landbruk/fiske,PropertySoldDate:2020-01-01--2022-11-24&fields=*&rows=2000&sortby=propertysolddate%20DESC,saleId%20ASC'
+
 // Use array buffer!
 
 let sales = [];
-
-async function main() {
-
-
-  let abc = await getData();
+async function loadDataFromAmedia(fromDate, toDate) {  
+  let TEST_URL = `https://services.api.no/api/acies/v1/external/1881/property/?querystring=&filters=PropertyType:Landbruk/fiske,PropertySoldDate:${fromDate}--${toDate}&fields=*&rows=3000&sortby=propertysolddate%20DESC,saleId%20ASC`;
+  console.log(TEST_URL);
+  let abc = await getData(TEST_URL);
   let def = refaktorData(abc)
   return def
 }
 
-async function getData() {
+async function getData(url) {
 
-  let json = await axios.get(TEST_URL);
+  let json = await axios.get(url);
   return json.data;
 }
 
@@ -68,15 +67,14 @@ function refaktorData(data) {
         date: d.Property.Sale.SoldDate,
         type: d.Property.Sale.Type,
         properties: [{
+          isPartOf: d.Property.Sale.InfoText.includes("ndel av") ? true : false,
           type: d.Property.BuildingType,
           coordinates: xy,
           address: address,
           municipality: d.Property.StreetAddress.Municipality,
           matrikkelNumber: mnFormat,
-          text: {
-            line: d.Property.Sale.LineId,
-            text: d.Property.Sale.InfoText
-          }
+          text: d.Property.Sale.InfoText
+          
         }]
       })
     }
@@ -86,23 +84,20 @@ function refaktorData(data) {
       let i = sales.findIndex(x => x.saleId == id) // Find SaleId array index
       sales[i].multiple = true;
       sales[i].properties.unshift({
+        isPartOf: d.Property.Sale.InfoText.includes("ndel av") ? true : false,
         type: d.Property.BuildingType,
         coordinates: xy,
         address: address,
         municipality: d.Property.StreetAddress.Municipality,
         matrikkelNumber: mnFormat,
-        text: {
-          line: d.Property.Sale.LineId,
-          text: d.Property.Sale.InfoText
-        }
+        text: d.Property.Sale.InfoText        
       })
     }
   })
 
-  let salesJSON = JSON.stringify(sales);
+  
   console.log(sales.length, 'formatert data');
-
-  fs.writeFileSync('./public/sales.json', salesJSON);
+  
   //Sales.insertMany(sales);
   return sales
   // return salesJSON
@@ -113,4 +108,4 @@ function refaktorData(data) {
 
 
 
-module.exports = { main }
+module.exports = { loadDataFromAmedia }

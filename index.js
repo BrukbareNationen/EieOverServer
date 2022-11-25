@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs');
 const axios = require('axios');
 const sf = require('./scheduledFunctions/timing.js');
 const app = express();
@@ -34,13 +35,25 @@ app.get('/', (req, res) => {
 })
 
 app.get('/load', async (req, res) => {
-    let allSales = await w.main();
-    //let allJSON = await JSON.stringify(allSales);
 
-   
-    //await Sales.insertMany(allSales);
+  //dagens dato til riktig format yyyy-mm-dd
+  let today = new Date();
+  let toDate = today.toISOString().slice(0, 10);
 
-   res.send(allSales.length + "asdqwd")
+  //60 dager siden riktig format yyyy-mm-dd
+  let c = new Date();
+  c.setDate(c.getDate() - 60);
+  let fromDate =  c.toISOString().slice(0, 10);
+  
+  let sales = await w.loadDataFromAmedia(fromDate, toDate);    
+
+  // Skriv til databasen
+  //await Sales.insertMany(allSales);
+
+  let salesJSON = JSON.stringify(sales);
+  fs.writeFileSync('./public/sales.json', salesJSON);
+
+  res.send("Henter fra " + fromDate + " til " + toDate)
 })
 
 app.get('/slack', (req, res) => {

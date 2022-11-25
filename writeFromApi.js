@@ -3,8 +3,7 @@ const axios = require('axios');
 const turf = require('@turf/turf');
 const Sales = require('./models/Sales');
 
-const { JSDOM } = require("jsdom");
-const { window } = new JSDOM();
+
 
 const TEST_URL = 'https://services.api.no/api/acies/v1/external/1881/property/?querystring=&filters=PropertyType:Landbruk/fiske,PropertySoldDate:2020-01-01--2022-11-24&fields=*&rows=2000&sortby=propertysolddate%20DESC,saleId%20ASC'
 // Use array buffer!

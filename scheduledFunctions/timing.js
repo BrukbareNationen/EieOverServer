@@ -1,11 +1,15 @@
 const CronJob = require("node-cron");
 const w = require('../writeFromApi');
+const fs = require('fs');
 
 exports.initScheduledJobs = async () => {
-  const scheduledJobFunction = CronJob.schedule("00 07 * * *", async () => {
+  const scheduledJobFunction = CronJob.schedule("0 * * * *", async () => {
 
+    let now = new Date();
     
-    console.log("I'm executed on a schedule!", formatDate(Date.now()));
+    //w.formatDate(Date.now());
+    
+    console.log("Node-Cron kjører" + now);
     // Add your custom logic here
 
      //dagens dato til riktig format yyyy-mm-dd
@@ -24,6 +28,8 @@ exports.initScheduledJobs = async () => {
 
   let salesJSON = JSON.stringify(sales);
   fs.writeFileSync('./public/sales.json', salesJSON);
+  
+  fs.appendFileSync('./writelog.txt', "\r\nHentet data fra server " +  now + "   -  henter fra " + fromDate + " til " + toDate );
   });
 
   scheduledJobFunction.start();

@@ -10,9 +10,8 @@ const Sales = require('./models/Sales');
 
 let sales = [];
 async function loadDataFromAmedia(fromDate, toDate) {  
-  let TEST_URL = `https://services.api.no/api/acies/v1/external/1881/property/?querystring=&filters=PropertyType:Landbruk/fiske,PropertySoldDate:${fromDate}--${toDate}&fields=*&rows=3000&sortby=propertysolddate%20DESC,saleId%20ASC`;
-  console.log(TEST_URL);
-  let abc = await getData(TEST_URL);
+  let API_URL = `https://services.api.no/api/acies/v1/external/1881/property/?querystring=&filters=PropertyType:Landbruk/fiske,PropertySoldDate:${fromDate}--${toDate}&fields=*&rows=3000&sortby=propertysolddate%20DESC,saleId%20ASC`;
+   let abc = await getData(TEST_URL);
   let def = refaktorData(abc)
   return def
 }
@@ -22,26 +21,6 @@ async function getData(url) {
   let json = await axios.get(url);
   return json.data;
 }
-
-
-
-// axios.get(TEST_URL,{ responseType:"arraybuffer"})
-//     .then(response => {
-
-//         let data = response.data;
-//         fs.writeFileSync('./response.json', data);
-
-//     })
-//     .catch(err => {
-//         console.log(err + " feil 2")
-//    })
-//.then( data => {
-// 	console.log(data, "er det noe data her?")
-
-// });
-
-
-
 
 
 

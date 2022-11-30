@@ -28,6 +28,8 @@ exports.initScheduledJobs = async () => {
 
   let salesJSON = JSON.stringify(sales);
   fs.writeFileSync('./public/sales.json', salesJSON);
+
+   sales = [];
   
   fs.appendFileSync('./writelog.txt', "\r\nHentet data fra server " +  now + "   -  henter fra " + fromDate + " til " + toDate );
   });

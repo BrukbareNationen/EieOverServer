@@ -5,7 +5,7 @@ const fs = require('fs');
 let sales;
 
 exports.initScheduledJobs = async () => {
-  const scheduledJobFunction = CronJob.schedule("* * * * *", async () => {
+  const scheduledJobFunction = CronJob.schedule("0 * * * *", async () => {
 
     let now = new Date();
     

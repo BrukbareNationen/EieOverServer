@@ -2,8 +2,10 @@ const CronJob = require("node-cron");
 const w = require('../writeFromApi');
 const fs = require('fs');
 
+let sales;
+
 exports.initScheduledJobs = async () => {
-  const scheduledJobFunction = CronJob.schedule("0 * * * *", async () => {
+  const scheduledJobFunction = CronJob.schedule("* * * * *", async () => {
 
     let now = new Date();
     
@@ -21,7 +23,7 @@ exports.initScheduledJobs = async () => {
   c.setDate(c.getDate() - 60);
   let fromDate =  c.toISOString().slice(0, 10);
   
-  let sales = await w.loadDataFromAmedia(fromDate, toDate);    
+  sales = await w.loadDataFromAmedia(fromDate, toDate);    
 
   // Skriv til databasen
   //await Sales.insertMany(allSales);

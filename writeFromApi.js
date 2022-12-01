@@ -11,8 +11,9 @@ const Sales = require('./models/Sales');
 let sales = [];
 async function loadDataFromAmedia(fromDate, toDate) {  
   let API_URL = `https://services.api.no/api/acies/v1/external/1881/property/?querystring=&filters=PropertyType:Landbruk/fiske,PropertySoldDate:${fromDate}--${toDate}&fields=*&rows=3000&sortby=propertysolddate%20DESC,saleId%20ASC`;
-   let abc = await getData(API_URL);
-  let def = refaktorData(abc)
+   let salesArr = [];
+   salesArr = await getData(API_URL);
+  let def = refaktorData(SalesArr)
   return def
 }
 

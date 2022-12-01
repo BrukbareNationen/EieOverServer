@@ -22,6 +22,8 @@ exports.initScheduledJobs = async () => {
   let c = new Date();
   c.setDate(c.getDate() - 60);
   let fromDate =  c.toISOString().slice(0, 10);
+
+  sales = null;
   
   sales = await w.loadDataFromAmedia(fromDate, toDate);    
 

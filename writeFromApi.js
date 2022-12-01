@@ -8,12 +8,13 @@ const Sales = require('./models/Sales');
 
 // Use array buffer!
 
-let sales = [];
+
 async function loadDataFromAmedia(fromDate, toDate) {  
   let API_URL = `https://services.api.no/api/acies/v1/external/1881/property/?querystring=&filters=PropertyType:Landbruk/fiske,PropertySoldDate:${fromDate}--${toDate}&fields=*&rows=3000&sortby=propertysolddate%20DESC,saleId%20ASC`;
-   let salesArr = [];
+   let salesArr = "";
    salesArr = await getData(API_URL);
-  let def = refaktorData(SalesArr)
+   let def = [];
+  def = refaktorData(salesArr)
   return def
 }
 
@@ -27,6 +28,8 @@ async function getData(url) {
 
 
 function refaktorData(data) {
+
+  let sales = [];
   //  Loop though Hits
   console.log(data.Hits.length, 'response from 1881');
 

@@ -5,13 +5,13 @@ const fs = require('fs');
 let sales;
 
 exports.initScheduledJobs = async () => {
-  const scheduledJobFunction = CronJob.schedule("0 * * * *", async () => {
+  const scheduledJobFunction = CronJob.schedule("* * * * *", async () => {
 
     let now = new Date();
     
     //w.formatDate(Date.now());
     
-    console.log("Node-Cron kjører" + now);
+    console.log("Node-Cron kjører " + now.toLocaleDateString());
     // Add your custom logic here
 
      //dagens dato til riktig format yyyy-mm-dd

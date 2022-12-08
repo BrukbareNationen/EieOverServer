@@ -35,6 +35,8 @@ function refaktorData(data) {
 
 
   data.Hits.forEach(d => {
+    if(d.Property.Sale.Type == "Uskiftebevilling") return // tar ikke med uskiftebevilling
+   
     let id = d.Property.Sale.Id
     let xy = d.Property.StreetAddress.Coordinate ? [d.Property.StreetAddress.Coordinate.Latitude, d.Property.StreetAddress.Coordinate.Longitude] : null
     let address = d.Property.StreetAddress.StreetName ? d.Property.StreetAddress.StreetName + " " + d.Property.StreetAddress.HouseNumber : null
@@ -49,6 +51,9 @@ function refaktorData(data) {
    
     // If sale does not exist, push new sale
     if (!sales.some(s => s.saleId == id)) {
+
+      
+      
       let date = new Date(d.Property.Sale.SoldDate).toLocaleDateString()
 
       let sale =({
@@ -77,6 +82,8 @@ function refaktorData(data) {
 
     // If sale exist, push new property
     else {
+
+      
       let i = sales.findIndex(x => x.saleId == id) // Find SaleId array index
       sales[i].multiple = true;
       sales[i].prop.unshift({

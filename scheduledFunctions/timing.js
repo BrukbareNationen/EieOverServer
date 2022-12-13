@@ -59,7 +59,7 @@ exports.initScheduledJobs = async () => {
 
   scheduledJobFunction.start();
 
-  cronArea.start();
+  //cronArea.start();
 }
 
 

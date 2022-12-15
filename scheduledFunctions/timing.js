@@ -38,27 +38,29 @@ exports.initScheduledJobs = async () => {
     fs.appendFileSync('./writelog.txt', "\r\nHentet data fra server " +  now + "   -  henter fra " + fromDate + " til " + toDate );
   });
 
-  const cronArea = CronJob.schedule("0 */6 * * *", async () => {
-
-    // try {
-    //   let data = await w.getData("http://api.nationen.no/kart/sales.json");
-
-    //   for(index = 0; index < 25; index++) {
-    //     console.log(data[index].date)
-    //   }
-      
-      
-    // } catch(error) {
-    //   console.log(error);
-    // }
-    axios.post('https://hooks.slack.com/services/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', {
-      text: `Ikke gi opp`
-    }).then(() => {res.send('Melding sendt')}).catch(() => {res.send('Melding feilet')})
- 
-  });
+  
 
   scheduledJobFunction.start();
 
+
+  // const cronArea = CronJob.schedule("0 */6 * * *", async () => {
+
+  //   // try {
+  //   //   let data = await w.getData("http://api.nationen.no/kart/sales.json");
+
+  //   //   for(index = 0; index < 25; index++) {
+  //   //     console.log(data[index].date)
+  //   //   }
+      
+      
+  //   // } catch(error) {
+  //   //   console.log(error);
+  //   // }
+  //   axios.post('https://hooks.slack.com/services/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', {
+  //     text: `Ikke gi opp`
+  //   }).then(() => {res.send('Melding sendt')}).catch(() => {res.send('Melding feilet')})
+ 
+  // });
   //cronArea.start();
 }
 

@@ -119,5 +119,4 @@ function getFromTo(string) {
 }
 
 
-
-module.exports = { loadDataFromAmedia, getData }
+module.exports = { loadDataFromAmedia, getData}

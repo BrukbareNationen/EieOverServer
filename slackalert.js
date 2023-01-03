@@ -51,12 +51,39 @@ async function getArea(areaCoords) {
   if(area > AREA_SIZE) areaArr.push(matrikkel)
 }
 
+  async function axiosGet(url) {
+  let res = await axios.get(url);
+  return res;
+}
+
+async function checkOneArea (matNumb) {
+
+  let url = "https://ws.geonorge.no/eiendom/v1/geokoding?matrikkelnummer=" + matNumb + "&omrade=true&utkoordsys=4326"
+  let areaCoords = await axiosGet(url)     // henter matrikkeldata for hver eiendom
+ 
+  let area = await getOneArea(areaCoords);      // legger alle eiendommer over en viss størrelse inn i areaArr[]
+  
+  return area;
+}
+
+async function getOneArea(areaCoords) {
+  let area;
+  
+  if(areaCoords.data.features.length > 0) {
+    let info = areaCoords.data.features[0].properties;
+    area = Math.round(turf.area(areaCoords.data)/1000)                 
+  }
+  return area;
+}
+
 async function axiosGet(url) {
   let res = await axios.get(url);
   return res;
 }
 
+
+
 // checkArea();
 
 
-module.exports = { checkArea }
+module.exports = { checkArea, checkOneArea }

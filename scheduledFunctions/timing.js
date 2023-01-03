@@ -1,5 +1,6 @@
 const CronJob = require("node-cron");
 const w = require('../writeFromApi');
+const slack = require('../slackalert.js')
 const fs = require('fs');
 const { log } = require("console");
 const { stringify } = require("querystring");
@@ -43,30 +44,55 @@ exports.initScheduledJobs = async () => {
   scheduledJobFunction.start();
 
 
-  // const cronArea = CronJob.schedule("0 */6 * * *", async () => {
+  const cronArea = CronJob.schedule("0 9 * * *", async () => {
+    console.log("Slack-Cron kjører " + new Date());
+    
+    let lastSaleDate = fs.readFileSync('./public/date.txt', 'utf8');
+    lastSaleDate = "12/1/2022";
+    let lastSaleDateTime = new Date(lastSaleDate).getTime();   
+    let text = "";
 
-  //   // try {
-  //   //   let data = await w.getData("http://api.nationen.no/kart/sales.json");
+    try {
+      let data = await w.getData("http://api.nationen.no/kart/sales.json");      
+      for(index = 0; index < data.length; index++) {
+        if(index == 0) fs.writeFileSync('./public/date.txt', data[0].date);
+        if (compareDates(new Date(data[index].date.toString()), lastSaleDateTime) == false) {
+          console.log('Alle nye datoer sjekket'); 
+          post(text);
+          return;
+        } 
 
-  //   //   for(index = 0; index < 25; index++) {
-  //   //     console.log(data[index].date)
-  //   //   }
-      
-      
-  //   // } catch(error) {
-  //   //   console.log(error);
-  //   // }
-  //   axios.post('https://hooks.slack.com/services/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', {
-  //     text: `Ikke gi opp`
-  //   }).then(() => {res.send('Melding sendt')}).catch(() => {res.send('Melding feilet')})
- 
-  // });
-  //cronArea.start();
+        if(data[index].price < 8000000 ) continue;
+
+        let areas = 0;
+        for(i=0; i < data[index].prop.length; i++){
+          let area = await slack.checkOneArea(data[index].prop[i].matNumb);                 
+          areas += area;
+        }         
+        text += "Dato: " + data[index].date + "  til " + (data[index].price/1000000) + " millioner kroner  med ID" + data[index].saleId + " med størrelse " + areas + " dekar \n";
+      }
+
+    } catch(error) {
+      console.log(error);
+    }
+  });
+  cronArea.start();
 }
 
+const compareDates = (d1, d2) => {
+  if (d1 > d2) {
+    return true
+  }  else {
+    return false
+  }
+};
 
-
-
+async function post(text) {
+  axios.post('https://hooks.slack.com/services/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', {
+      text: text
+    
+    }).then(() => {console.log(`Melding sendt`)}).catch(() => {console.log('Melding feilet')})
+}
 
 // function padTo2Digits(num) {
 //   return num.toString().padStart(2, '0');

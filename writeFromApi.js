@@ -24,9 +24,6 @@ async function getData(url) {
   return json.data;
 }
 
-
-
-
 function refaktorData(data) {
 
   let sales = [];

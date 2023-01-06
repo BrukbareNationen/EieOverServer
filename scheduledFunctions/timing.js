@@ -87,23 +87,13 @@ const compareDates = (d1, d2) => {
   }
 };
 
-if(text === "") {
-  async function post(text) {
-    axios.post('https://hooks.slack.com/services/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', {
-        text: 'Ingen nye eiendommer møtte kravene'      
-      }).then(() => {console.log(`Melding sendt`)}).catch(() => {console.log('Melding feilet')})
-  }
-  
-} else {
-  async function post(text) {
-    axios.post('https://hooks.slack.com/services/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', {
-        text: text
-      
-      }).then(() => {console.log(`Melding sendt`)}).catch(() => {console.log('Melding feilet')})
-  }
+
+async function post(text) {
+  axios.post('https://hooks.slack.com/services/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', {
+      text: text
+    
+    }).then(() => {console.log(`Melding sendt`)}).catch(() => {console.log('Melding feilet')})
 }
-
-
 
 // function padTo2Digits(num) {
 //   return num.toString().padStart(2, '0');

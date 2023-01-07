@@ -48,7 +48,7 @@ exports.initScheduledJobs = async () => {
     console.log("Slack-Cron kjører " + new Date());
 
     let lastSaleDate = fs.readFileSync('./public/date.txt', 'utf8');
-    lastSaleDate = "12/1/2022";
+    
     let lastSaleDateTime = new Date(lastSaleDate).getTime();
     let text = "";
 

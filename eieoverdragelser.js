@@ -1,5 +1,5 @@
 const express = require('express');
-const app = express();
+
 const fs = require('fs');
 const sf = require('./scheduledFunctions/timing.js');
 const mongoose = require('mongoose');
@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const w = require('./writeFromApi');
 
 //config
+const app = express();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 app.set("port", process.env.PORT || 3300);

@@ -1,14 +1,4 @@
-const fs = require('fs');
 const axios = require('axios');
-const turf = require('@turf/turf');
-const Sales = require('./models/Sales');
-const { stringify } = require('querystring');
-
-
-
-
-// Use array buffer!
-
 
 async function loadDataFromAmedia(fromDate, toDate) {  
   let API_URL = `https://services.api.no/api/acies/v1/external/1881/property/?querystring=&filters=PropertyType:Landbruk/fiske,PropertySoldDate:${fromDate}--${toDate}&fields=*&rows=3000&sortby=propertysolddate%20DESC,saleId%20ASC`;
@@ -114,6 +104,5 @@ function getFromTo(string) {
  // return { from: fromTo[0], to:  fromTo[1].substring(0, (fromTo[1].indexOf("(") - 1)) }
  return fromToArr
 }
-
 
 module.exports = { loadDataFromAmedia, getData}

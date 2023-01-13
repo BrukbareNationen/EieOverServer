@@ -2,11 +2,7 @@ const CronJob = require("node-cron");
 const w = require('../writeFromApi');
 const slack = require('../slackalert.js')
 const fs = require('fs');
-const { log } = require("console");
-const { stringify } = require("querystring");
 const axios = require('axios')
-
-
 
 exports.initScheduledJobs = async () => {
 
@@ -39,8 +35,6 @@ exports.initScheduledJobs = async () => {
     fs.appendFileSync('./writelog.txt', "\r\nHentet data fra server " + now + "   -  henter fra " + fromDate + " til " + toDate);
   });
 
-
-
   scheduledJobFunction.start();
 
 
@@ -48,7 +42,7 @@ exports.initScheduledJobs = async () => {
     console.log("Slack-Cron kjører " + new Date());
 
     let lastSaleDate = fs.readFileSync('./public/date.txt', 'utf8');
-    
+
     let lastSaleDateTime = new Date(lastSaleDate).getTime();
     let text = "";
 
@@ -74,9 +68,9 @@ exports.initScheduledJobs = async () => {
 
       async function post(text) {
         axios.post('https://hooks.slack.com/services/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', {
-            text: text
-          
-          }).then(() => {console.log(`Melding sendt`)}).catch(() => {console.log('Melding feilet')})
+          text: text
+
+        }).then(() => { console.log(`Melding sendt`) }).catch(() => { console.log('Melding feilet') })
       }
 
     } catch (error) {

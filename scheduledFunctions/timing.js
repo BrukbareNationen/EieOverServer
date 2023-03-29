@@ -67,10 +67,7 @@ exports.initScheduledJobs = async () => {
       }
 
       async function post(text) {
-        axios.post('https://hooks.slack.com/services/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', {
-          text: text
-
-        }).then(() => { console.log(`Melding sendt`) }).catch(() => { console.log('Melding feilet') })
+        axios.post(`https://graph.workplace.com/group/feed?message=${text}&access_token=DQVJ0cmJTdWZAhTXNOdWV2SHdrSGZAONmp0MFVhOVpTb2V2U2c2U1RTRjFiX3BSTzhCWF8wZAW8yYk94cmNpM2pGdWlIT3k0c1JOTHBYc0wxV1lORy1YVjJGTi1LR1IwNXNvMGFjNXd1Y1B3MEtNT0tvWEd4MWhnUGlLN0w5N3FCOVRTaGduRXRISFdFei1KbFF3cTZAlckZARS0hCMUhzaEhqU0ZAFWDVMMEw5V3dYWWY3YXFjUkd4ajRJM3pVWlFYYW5HczV4dldn`).then(() => { console.log(`Melding sendt`) }).catch(() => { console.log('Melding feilet') })
       }
 
     } catch (error) {

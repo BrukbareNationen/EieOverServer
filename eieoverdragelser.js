@@ -2,7 +2,6 @@ const express = require('express');
 
 const fs = require('fs');
 const sf = require('./scheduledFunctions/timing.js');
-const mongoose = require('mongoose');
 require('dotenv/config');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -54,10 +53,6 @@ app.get('/load', async (req, res) => {
   res.send("Henter fra " + fromDate + " til " + toDate +" og legnden er " + sales.length)
 })
 
-//connect to DB
-mongoose.connect(process.env.DB_CONNECTION, 
-            () => {console.log('connected to db');
-          })
 
 app.listen(3300, () => {
   console.log("Express server listening on port " + app.get("port"));
